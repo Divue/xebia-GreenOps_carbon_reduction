@@ -109,3 +109,12 @@ def add_cloud_usage(data: CloudUsage):
         "message": "Cloud usage received",
         "data": data
     }
+
+@router.get("/pipeline-status")
+def pipeline_status():
+    return {
+        "projectName": "GreenOps Dashboard",
+        "greenScore": "B",
+        "status": "Pass",
+        "message": "Sustainability target met"
+    }
