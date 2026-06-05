@@ -89,3 +89,42 @@ for recommendation in recommendations:
     )
 
  ```
+
+
+ Example 1 — EC2
+request = ResourceRequest(
+    resource="aws_ec2",
+    resource_type="m5.large",
+    usage=720,
+    region="ap-south-1",
+    cpu_utilization=40
+)
+Example 2 — S3
+request = ResourceRequest(
+    resource="storage",
+    resource_type="aws_s3_standard",
+    usage=1000,
+    region="ap-south-1"
+)
+Example 3 — Lambda
+request = ResourceRequest(
+    resource="aws_lambda",
+    resource_type="default",
+    usage=0,
+    region="us-east-1",
+    requests_count=5000000
+)
+
+Calculation:
+
+5 million requests
+× 0.8 kWh per million
+
+= 4.0 kWh
+Example 4 — DynamoDB
+request = ResourceRequest(
+    resource="database",
+    resource_type="aws_dynamodb",
+    usage=0,
+    region="us-east-1",
+    requests_count=10000000
