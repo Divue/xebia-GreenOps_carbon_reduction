@@ -8,7 +8,9 @@ class CarbonCalculator:
         runtime_hours
     ):
 
-        utilization_ratio = cpu_utilization / 100
+        utilization_ratio = (
+            cpu_utilization / 100
+        )
 
         avg_power = (
             baseline_power_watts
@@ -20,12 +22,10 @@ class CarbonCalculator:
             * utilization_ratio
         )
 
-        energy_kwh = (
+        return (
             avg_power
             * runtime_hours
         ) / 1000
-
-        return energy_kwh
 
     @staticmethod
     def calculate_storage_energy(
@@ -42,8 +42,23 @@ class CarbonCalculator:
         return factor * transfer_gb
 
     @staticmethod
+    def calculate_request_energy(
+        factor,
+        requests_count
+    ):
+
+        return (
+            requests_count
+            / 1_000_000
+        ) * factor
+
+    @staticmethod
     def calculate_carbon(
         energy_kwh,
         carbon_intensity
     ):
-        return energy_kwh * carbon_intensity
+
+        return (
+            energy_kwh
+            * carbon_intensity
+        )
