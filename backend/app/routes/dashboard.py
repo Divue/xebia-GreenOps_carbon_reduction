@@ -1,6 +1,7 @@
 from fastapi import APIRouter
-
+from app.schemas.cloud_usage import CloudUsage
 router = APIRouter(prefix="/api", tags=["Dashboard"])
+
 
 @router.get("/dashboard")
 def get_dashboard():
@@ -100,4 +101,11 @@ def cloud_usage():
         "networkGB": 300,
         "estimatedPowerKWh": 450,
         "estimatedCO2e": 90
+    }
+
+@router.post("/cloud-usage")
+def add_cloud_usage(data: CloudUsage):
+    return {
+        "message": "Cloud usage received",
+        "data": data
     }
