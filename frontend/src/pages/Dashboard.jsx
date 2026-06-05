@@ -6,18 +6,44 @@ import Sidebar from "../components/Sidebar";
 
 function Dashboard() {
   return (
-    <div style={{ display: "flex", background: "#f5f7fa" }}>
+    <div
+      style={{
+        display: "flex",
+        minHeight: "100vh",
+        backgroundColor: "#eef2f7",
+      }}
+    >
       <Sidebar />
 
       <div
         style={{
           flex: 1,
           padding: "30px",
+          width: "100%",
         }}
       >
-        <h1 style={{ marginBottom: "30px" }}>
-          🌱 GreenOps AI Dashboard
-        </h1>
+        {/* Header */}
+        <div style={{ marginBottom: "30px" }}>
+          <h1
+            style={{
+              fontSize: "38px",
+              fontWeight: "700",
+              color: "#111827",
+              marginBottom: "10px",
+            }}
+          >
+            🌱 GreenOps AI Dashboard
+          </h1>
+
+          <p
+            style={{
+              color: "#6b7280",
+              fontSize: "16px",
+            }}
+          >
+            Monitor carbon emissions, cloud costs and sustainability metrics.
+          </p>
+        </div>
 
         {/* KPI Cards */}
         <div
@@ -28,32 +54,36 @@ function Dashboard() {
           }}
         >
           <div style={cardStyle}>
-            <h3>Total Carbon Emissions</h3>
-            <p>{dashboardData.totalCarbonEmissions} kg CO₂e</p>
+            <h3 style={titleStyle}>Total Carbon Emissions</h3>
+            <p style={valueStyle}>
+              {dashboardData.totalCarbonEmissions} kg CO₂e
+            </p>
           </div>
 
           <div style={cardStyle}>
-            <h3>Cloud Cost</h3>
-            <p>${dashboardData.cloudCost}</p>
+            <h3 style={titleStyle}>Cloud Cost</h3>
+            <p style={valueStyle}>${dashboardData.cloudCost}</p>
           </div>
 
           <div style={cardStyle}>
-            <h3>Cost per Kg CO₂e</h3>
-            <p>${dashboardData.costPerKgCO2e}</p>
+            <h3 style={titleStyle}>Cost per Kg CO₂e</h3>
+            <p style={valueStyle}>${dashboardData.costPerKgCO2e}</p>
           </div>
 
           <div style={cardStyle}>
-            <h3>Carbon Intensity</h3>
-            <p>{dashboardData.carbonIntensity}</p>
+            <h3 style={titleStyle}>Carbon Intensity</h3>
+            <p style={valueStyle}>{dashboardData.carbonIntensity}</p>
           </div>
 
           <div style={cardStyle}>
-            <h3>Green Score</h3>
+            <h3 style={titleStyle}>Green Score</h3>
+
             <p
               style={{
-                fontSize: "24px",
-                fontWeight: "bold",
+                fontSize: "32px",
+                fontWeight: "700",
                 color: "#16a34a",
+                margin: 0,
               }}
             >
               {dashboardData.greenScore}
@@ -61,26 +91,28 @@ function Dashboard() {
           </div>
 
           <div style={cardStyle}>
-            <h3>Forecasted Quarter Emission</h3>
-            <p>{dashboardData.forecastedQuarterEmission} kg CO₂e</p>
+            <h3 style={titleStyle}>Forecasted Quarter Emission</h3>
+            <p style={valueStyle}>
+              {dashboardData.forecastedQuarterEmission} kg CO₂e
+            </p>
           </div>
         </div>
 
         {/* Emissions Chart */}
         <div style={sectionStyle}>
-          <h2>📈 Carbon Emissions Trend</h2>
+          <h2 style={sectionTitle}>📈 Carbon Emissions Trend</h2>
           <EmissionChart />
         </div>
 
         {/* Forecast Chart */}
         <div style={sectionStyle}>
-          <h2>🔮 Carbon Emission Forecast</h2>
+          <h2 style={sectionTitle}>🔮 Carbon Emission Forecast</h2>
           <ForecastChart />
         </div>
 
         {/* Recommendations */}
         <div style={sectionStyle}>
-          <h2>💡 Optimization Recommendations</h2>
+          <h2 style={sectionTitle}>💡 Optimization Recommendations</h2>
           <RecommendationCard />
         </div>
       </div>
@@ -90,17 +122,41 @@ function Dashboard() {
 
 const cardStyle = {
   backgroundColor: "#ffffff",
-  padding: "20px",
-  borderRadius: "12px",
-  boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
+  padding: "24px",
+  borderRadius: "16px",
+  boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+  minHeight: "100px",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  textAlign: "center",
+};
+
+const titleStyle = {
+  color: "#4b5563",
+  fontSize: "16px",
+  fontWeight: "600",
+  marginBottom: "12px",
+};
+
+const valueStyle = {
+  fontSize: "28px",
+  fontWeight: "700",
+  color: "#111827",
+  margin: 0,
 };
 
 const sectionStyle = {
-  marginTop: "40px",
+  marginTop: "30px",
   backgroundColor: "#ffffff",
-  padding: "20px",
-  borderRadius: "12px",
-  boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
+  padding: "25px",
+  borderRadius: "16px",
+  boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+};
+
+const sectionTitle = {
+  color: "#111827",
+  marginBottom: "20px",
 };
 
 export default Dashboard;

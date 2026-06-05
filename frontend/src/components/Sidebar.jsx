@@ -12,10 +12,10 @@ function Sidebar() {
       <h2>🌱 GreenOps</h2>
 
       <ul style={{ listStyle: "none", padding: 0 }}>
-        <li style={{ margin: "20px 0" }}>Dashboard</li>
-        <li style={{ margin: "20px 0" }}>Forecast</li>
-        <li style={{ margin: "20px 0" }}>Recommendations</li>
-        <li style={{ margin: "20px 0" }}>Green Score</li>
+        <li style={{ margin: "20px 0" }}>📊 Dashboard</li>
+        <li style={{ margin: "20px 0" }}>📈 Forecast</li>
+        <li style={{ margin: "20px 0" }}>💡 Recommendations</li>
+        <li style={{ margin: "20px 0" }}>🌱 Green Score</li>
       </ul>
     </div>
   );
