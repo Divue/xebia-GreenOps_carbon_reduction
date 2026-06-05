@@ -1,0 +1,265 @@
+{
+  "aws_ec2": {
+    "t3.nano": {
+      "vcpu": 2,
+      "memory_gb": 0.5,
+      "baseline_power_watts": 8,
+      "max_power_watts": 18
+    },
+    "t3.micro": {
+      "vcpu": 2,
+      "memory_gb": 1,
+      "baseline_power_watts": 12,
+      "max_power_watts": 25
+    },
+    "t3.small": {
+      "vcpu": 2,
+      "memory_gb": 2,
+      "baseline_power_watts": 18,
+      "max_power_watts": 35
+    },
+    "t3.medium": {
+      "vcpu": 2,
+      "memory_gb": 4,
+      "baseline_power_watts": 25,
+      "max_power_watts": 50
+    },
+    "t3.large": {
+      "vcpu": 2,
+      "memory_gb": 8,
+      "baseline_power_watts": 35,
+      "max_power_watts": 70
+    },
+    "m5.large": {
+      "vcpu": 2,
+      "memory_gb": 8,
+      "baseline_power_watts": 35,
+      "max_power_watts": 80
+    },
+    "m5.xlarge": {
+      "vcpu": 4,
+      "memory_gb": 16,
+      "baseline_power_watts": 60,
+      "max_power_watts": 120
+    },
+    "m5.2xlarge": {
+      "vcpu": 8,
+      "memory_gb": 32,
+      "baseline_power_watts": 95,
+      "max_power_watts": 180
+    },
+    "c5.large": {
+      "vcpu": 2,
+      "memory_gb": 4,
+      "baseline_power_watts": 40,
+      "max_power_watts": 90
+    },
+    "c5.xlarge": {
+      "vcpu": 4,
+      "memory_gb": 8,
+      "baseline_power_watts": 70,
+      "max_power_watts": 140
+    },
+    "r5.large": {
+      "vcpu": 2,
+      "memory_gb": 16,
+      "baseline_power_watts": 45,
+      "max_power_watts": 100
+    },
+    "r5.xlarge": {
+      "vcpu": 4,
+      "memory_gb": 32,
+      "baseline_power_watts": 85,
+      "max_power_watts": 170
+    }
+  },
+
+  "azure_vm": {
+    "B1s": {
+      "vcpu": 1,
+      "memory_gb": 1,
+      "baseline_power_watts": 10,
+      "max_power_watts": 20
+    },
+    "B2s": {
+      "vcpu": 2,
+      "memory_gb": 4,
+      "baseline_power_watts": 20,
+      "max_power_watts": 45
+    },
+    "D2s_v3": {
+      "vcpu": 2,
+      "memory_gb": 8,
+      "baseline_power_watts": 35,
+      "max_power_watts": 80
+    },
+    "D4s_v3": {
+      "vcpu": 4,
+      "memory_gb": 16,
+      "baseline_power_watts": 60,
+      "max_power_watts": 120
+    },
+    "F2s_v2": {
+      "vcpu": 2,
+      "memory_gb": 4,
+      "baseline_power_watts": 40,
+      "max_power_watts": 90
+    },
+    "E4s_v5": {
+      "vcpu": 4,
+      "memory_gb": 32,
+      "baseline_power_watts": 75,
+      "max_power_watts": 150
+    }
+  },
+
+  "aws_lambda": {
+    "default": {
+      "energy_factor_kwh_per_1m_invocations": 0.8
+    }
+  },
+
+  "azure_functions": {
+    "default": {
+      "energy_factor_kwh_per_1m_invocations": 0.85
+    }
+  },
+
+  "kubernetes": {
+    "eks_node": {
+      "baseline_power_watts": 45,
+      "max_power_watts": 110
+    },
+    "aks_node": {
+      "baseline_power_watts": 45,
+      "max_power_watts": 110
+    }
+  },
+
+  "storage": {
+    "aws_s3_standard": {
+      "energy_factor_kwh_per_gb_month": 0.0002
+    },
+    "aws_s3_infrequent_access": {
+      "energy_factor_kwh_per_gb_month": 0.00012
+    },
+    "aws_s3_glacier": {
+      "energy_factor_kwh_per_gb_month": 0.00005
+    },
+    "aws_ebs_gp3": {
+      "energy_factor_kwh_per_gb_month": 0.0003
+    },
+    "azure_blob_hot": {
+      "energy_factor_kwh_per_gb_month": 0.0002
+    },
+    "azure_blob_cool": {
+      "energy_factor_kwh_per_gb_month": 0.0001
+    },
+    "azure_blob_archive": {
+      "energy_factor_kwh_per_gb_month": 0.00004
+    },
+    "azure_managed_disk": {
+      "energy_factor_kwh_per_gb_month": 0.0003
+    }
+  },
+
+  "database": {
+    "aws_rds_small": {
+      "baseline_power_watts": 30,
+      "max_power_watts": 70
+    },
+    "aws_rds_medium": {
+      "baseline_power_watts": 60,
+      "max_power_watts": 120
+    },
+    "aws_dynamodb": {
+      "energy_factor_kwh_per_million_requests": 0.6
+    },
+    "azure_sql_basic": {
+      "baseline_power_watts": 25,
+      "max_power_watts": 60
+    },
+    "azure_sql_standard": {
+      "baseline_power_watts": 55,
+      "max_power_watts": 110
+    },
+    "azure_cosmosdb": {
+      "energy_factor_kwh_per_million_requests": 0.7
+    }
+  },
+
+  "network": {
+    "aws_data_transfer": {
+      "energy_factor_kwh_per_gb": 0.001
+    },
+    "aws_cloudfront": {
+      "energy_factor_kwh_per_gb": 0.0008
+    },
+    "azure_bandwidth": {
+      "energy_factor_kwh_per_gb": 0.001
+    },
+    "azure_cdn": {
+      "energy_factor_kwh_per_gb": 0.0008
+    }
+  },
+
+  "regions": {
+    "ap-south-1": {
+      "cloud": "aws",
+      "carbon_intensity": 0.70
+    },
+    "ap-southeast-1": {
+      "cloud": "aws",
+      "carbon_intensity": 0.48
+    },
+    "us-east-1": {
+      "cloud": "aws",
+      "carbon_intensity": 0.42
+    },
+    "us-west-2": {
+      "cloud": "aws",
+      "carbon_intensity": 0.28
+    },
+    "eu-west-1": {
+      "cloud": "aws",
+      "carbon_intensity": 0.18
+    },
+    "eu-north-1": {
+      "cloud": "aws",
+      "carbon_intensity": 0.05
+    },
+
+    "eastus": {
+      "cloud": "azure",
+      "carbon_intensity": 0.42
+    },
+    "westus": {
+      "cloud": "azure",
+      "carbon_intensity": 0.30
+    },
+    "centralus": {
+      "cloud": "azure",
+      "carbon_intensity": 0.36
+    },
+    "northeurope": {
+      "cloud": "azure",
+      "carbon_intensity": 0.12
+    },
+    "westeurope": {
+      "cloud": "azure",
+      "carbon_intensity": 0.15
+    },
+    "swedencentral": {
+      "cloud": "azure",
+      "carbon_intensity": 0.03
+    },
+    "norwayeast": {
+      "cloud": "azure",
+      "carbon_intensity": 0.04
+    },
+    "uksouth": {
+      "cloud": "azure",
+      "carbon_intensity": 0.20
+    }
+  }
+}
