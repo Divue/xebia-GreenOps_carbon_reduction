@@ -43,3 +43,61 @@ def get_recommendations():
             }
         ]
     }
+
+@router.get("/forecast")
+def get_forecast():
+    return {
+        "forecast": [
+            {"month": "Jul", "predictedEmission": 260},
+            {"month": "Aug", "predictedEmission": 275},
+            {"month": "Sep", "predictedEmission": 290}
+        ]
+    }
+
+
+@router.get("/green-score")
+def get_green_score():
+    return {
+        "score": "B",
+        "carbonIntensity": 0.42,
+        "status": "Pass",
+        "message": "Sustainability target met"
+    }
+
+
+@router.get("/recommendations")
+def get_recommendations():
+    return {
+        "recommendations": [
+            {
+                "title": "Right-size non-prod VMs",
+                "description": "Reduce over-provisioned instances",
+                "potentialReduction": "15%",
+                "priority": "High"
+            }
+        ]
+    }
+
+
+@router.get("/emissions/history")
+def emissions_history():
+    return {
+        "history": [
+            {"month": "Jan", "emissions": 180},
+            {"month": "Feb", "emissions": 210},
+            {"month": "Mar", "emissions": 245}
+        ]
+    }
+
+
+@router.get("/cloud-usage")
+def cloud_usage():
+    return {
+        "provider": "AWS",
+        "region": "us-east-1",
+        "vmHours": 1200,
+        "storageGB": 500,
+        "networkGB": 300,
+        "estimatedPowerKWh": 450,
+        "estimatedCO2e": 90
+    }
