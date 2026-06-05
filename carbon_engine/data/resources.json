@@ -1,0 +1,49 @@
+{
+  "aws_ec2": {
+    "t3.medium": {
+      "vcpu": 2,
+      "memory_gb": 4,
+      "baseline_power_watts": 25,
+      "max_power_watts": 50
+    },
+    "m5.large": {
+      "vcpu": 2,
+      "memory_gb": 8,
+      "baseline_power_watts": 35,
+      "max_power_watts": 80
+    }
+  },
+
+  "azure_vm": {
+    "D2s_v3": {
+      "vcpu": 2,
+      "memory_gb": 8,
+      "baseline_power_watts": 35,
+      "max_power_watts": 80
+    }
+  },
+
+  "storage": {
+    "aws_s3_standard": {
+      "energy_factor_kwh_per_gb_month": 0.0002
+    }
+  },
+
+  "network": {
+    "aws_data_transfer": {
+      "energy_factor_kwh_per_gb": 0.001
+    }
+  },
+
+  "regions": {
+    "ap-south-1": {
+      "carbon_intensity": 0.70
+    },
+    "eastus": {
+      "carbon_intensity": 0.42
+    },
+    "swedencentral": {
+      "carbon_intensity": 0.03
+    }
+  }
+}
