@@ -7,11 +7,28 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-import { providerData } from "../data/mockData";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
-const COLORS = ["#16a34a", "#2563eb"];
+const COLORS = ["#16a34a", "#2563eb", "#f59e0b", "#ef4444"];
 
 function ProviderPieChart() {
+  const [providerData, setProviderData] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8000/api/emissions/by-provider")
+      .then((response) => {
+        setProviderData(response.data.providers);
+      })
+      .catch((error) => {
+        console.error(
+          "Error fetching provider emissions data:",
+          error
+        );
+      });
+  }, []);
+
   return (
     <ResponsiveContainer width="100%" height={450}>
       <PieChart>

@@ -8,9 +8,23 @@ import {
   Tooltip,
 } from "recharts";
 
-import { emissionsHistory } from "../data/mockData";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 function EmissionChart() {
+  const [emissionsHistory, setEmissionsHistory] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8000/api/emissions/history")
+      .then((response) => {
+        setEmissionsHistory(response.data.history);
+      })
+      .catch((error) => {
+        console.error("Error fetching emissions history:", error);
+      });
+  }, []);
+
   return (
     <ResponsiveContainer width="100%" height={350}>
       <LineChart data={emissionsHistory}>

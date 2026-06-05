@@ -8,9 +8,23 @@ import {
   Tooltip,
 } from "recharts";
 
-import { forecastData } from "../data/mockData";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 function ForecastChart() {
+  const [forecastData, setForecastData] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8000/api/forecast")
+      .then((response) => {
+        setForecastData(response.data.forecast);
+      })
+      .catch((error) => {
+        console.error("Error fetching forecast data:", error);
+      });
+  }, []);
+
   return (
     <ResponsiveContainer width="100%" height={350}>
       <LineChart data={forecastData}>
