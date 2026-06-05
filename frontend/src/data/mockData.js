@@ -35,3 +35,20 @@ export const recommendations = [
     priority: "Medium",
   },
 ];
+
+export const providerData = [
+  {
+    provider: "AWS",
+    emissions: 140,
+  },
+  {
+    provider: "Azure",
+    emissions: 105,
+  },
+];
+
+export const regionData = [
+  { region: "us-east-1", emissions: 80 },
+  { region: "eu-west-1", emissions: 60 },
+  { region: "ap-south-1", emissions: 105 },
+];

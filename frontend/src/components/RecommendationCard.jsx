@@ -7,11 +7,11 @@ function RecommendationCard() {
         <div
           key={index}
           style={{
-            border: "1px solid #ddd",
-            borderRadius: "10px",
-            padding: "15px",
-            marginBottom: "15px",
             background: "#fff",
+            borderRadius: "12px",
+            padding: "20px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+            marginBottom: "15px",
           }}
         >
           <h3>{item.title}</h3>

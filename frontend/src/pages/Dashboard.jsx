@@ -3,6 +3,8 @@ import EmissionChart from "../components/EmissionChart";
 import ForecastChart from "../components/ForecastChart";
 import RecommendationCard from "../components/RecommendationCard";
 import Sidebar from "../components/Sidebar";
+import ProviderPieChart from "../components/ProviderPieChart";
+import RegionBarChart from "../components/RegionBarChart";
 
 function Dashboard() {
   return (
@@ -114,6 +116,22 @@ function Dashboard() {
         <div style={sectionStyle}>
           <h2 style={sectionTitle}>💡 Optimization Recommendations</h2>
           <RecommendationCard />
+        </div>
+
+        <div style={sectionStyle}>
+          <h2 style={sectionTitle}>
+            ☁️ Carbon Emissions by Cloud Provider
+          </h2>
+
+          <ProviderPieChart />
+        </div>
+
+        <div style={sectionStyle}>
+          <h2 style={sectionTitle}>
+            🌍 Carbon Emissions by Region
+          </h2>
+
+          <RegionBarChart />
         </div>
       </div>
     </div>
