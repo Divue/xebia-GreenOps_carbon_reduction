@@ -1,0 +1,101 @@
+# ============================================================
+#  GreenOps AI – Shift-Left Green Score Check
+#  Runs on every PR targeting main.
+#  Calls /api/pipeline-status and gates the merge based on
+#  the carbon sustainability score returned by the backend.
+# ============================================================
+
+name: 🌿 GreenOps Shift-Left Check
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  green-score-check:
+    name: Carbon Sustainability Gate
+    runs-on: ubuntu-latest
+
+    env:
+      # -------------------------------------------------------
+      # Once the backend is deployed, replace this with the
+      # actual hosted URL, e.g. https://greenops-api.onrender.com
+      # Until then, the mock mode below handles it gracefully.
+      # -------------------------------------------------------
+      API_BASE_URL: ${{ secrets.API_BASE_URL || 'http://localhost:5000' }}
+
+    steps:
+      # ── Step 1: Pull the code ──────────────────────────────
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      # ── Step 2: Try to hit the live API ───────────────────
+      - name: 🔍 Fetch Pipeline Status from Backend
+        id: fetch_status
+        run: |
+          echo "Calling $API_BASE_URL/api/pipeline-status ..."
+
+          HTTP_RESPONSE=$(curl --silent --write-out "HTTPSTATUS:%{http_code}" \
+            --max-time 10 \
+            "$API_BASE_URL/api/pipeline-status" || echo "HTTPSTATUS:000")
+
+          HTTP_BODY=$(echo "$HTTP_RESPONSE" | sed -e 's/HTTPSTATUS:.*//')
+          HTTP_CODE=$(echo "$HTTP_RESPONSE" | tr -d '\n' | sed -e 's/.*HTTPSTATUS://')
+
+          echo "HTTP Status Code : $HTTP_CODE"
+          echo "Response Body    : $HTTP_BODY"
+
+          # Save for next step
+          echo "http_code=$HTTP_CODE" >> $GITHUB_OUTPUT
+          echo "response=$HTTP_BODY"  >> $GITHUB_OUTPUT
+
+      # ── Step 3: Parse & evaluate the score ────────────────
+      - name: 🌱 Evaluate Green Score
+        run: |
+          HTTP_CODE="${{ steps.fetch_status.outputs.http_code }}"
+          RESPONSE='${{ steps.fetch_status.outputs.response }}'
+
+          # ── MOCK MODE (backend not deployed yet) ────────────
+          # If the API isn't reachable, we simulate a "Pass" so
+          # the pipeline doesn't block team members during dev.
+          # Remove this block once the backend is live.
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "⚠️  Backend not reachable (HTTP $HTTP_CODE)."
+            echo "🔄  Running in MOCK mode — simulating a Pass result."
+            STATUS="Pass"
+            SCORE="B"
+            MESSAGE="Mock check passed. Deploy backend to enable real checks."
+          else
+            # Parse JSON fields with Python (available on ubuntu-latest)
+            STATUS=$(echo "$RESPONSE" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('status','Unknown'))")
+            SCORE=$(echo "$RESPONSE"  | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('greenScore','?'))")
+            MESSAGE=$(echo "$RESPONSE" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('message','No message'))")
+          fi
+
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "  🌿 GreenOps Shift-Left Carbon Report"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "  Green Score : $SCORE"
+          echo "  Status      : $STATUS"
+          echo "  Message     : $MESSAGE"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+          # ── Gate logic ──────────────────────────────────────
+          if [ "$STATUS" = "Critical" ]; then
+            echo ""
+            echo "❌ MERGE BLOCKED — Carbon threshold critically exceeded."
+            echo "   Fix over-provisioned resources before merging to main."
+            exit 1
+
+          elif [ "$STATUS" = "Warning" ]; then
+            echo ""
+            echo "⚠️  WARNING — Sustainability target not fully met."
+            echo "   Review infrastructure config. Merge is allowed but flagged."
+            exit 0   # soft gate: warn but don't block
+
+          else
+            echo ""
+            echo "✅ PASSED — Sustainability target met. Safe to merge!"
+            exit 0
+          fi

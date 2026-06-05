@@ -1,0 +1,7 @@
+{
+  "projectName": "Xebia-Analytics-Service",
+  "cloudProvider": "AWS",
+  "targetRegion": "ap-south-1",
+  "requestedVMHours": 1500,
+  "storageGB": 800
+}

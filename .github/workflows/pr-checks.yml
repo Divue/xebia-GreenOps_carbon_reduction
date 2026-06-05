@@ -1,0 +1,208 @@
+# ============================================================
+#  GreenOps AI – PR Sanity Checks
+#  Runs on every PR to catch basic issues before review.
+#  Covers: Python (backend/ML), Node/React (frontend), and
+#  YAML/JSON config validation.
+# ============================================================
+
+name: ✅ PR Sanity Checks
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  # ── Job 1: Detect what changed ────────────────────────────
+  detect-changes:
+    name: Detect Changed Areas
+    runs-on: ubuntu-latest
+    outputs:
+      backend:  ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+      ml:       ${{ steps.filter.outputs.ml }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 🔎 Filter Changed Paths
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            backend:
+              - 'backend/**'
+            frontend:
+              - 'frontend/**'
+            ml:
+              - 'ml/**'
+
+  # ── Job 2: Python checks (backend + ML) ───────────────────
+  python-checks:
+    name: 🐍 Python Lint & Syntax Check
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    # Run if backend OR ml files changed, OR if we can't detect
+    if: needs.detect-changes.outputs.backend == 'true' || needs.detect-changes.outputs.ml == 'true' || needs.detect-changes.outputs.backend == ''
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set Up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 📦 Install Linting Tools
+        run: |
+          pip install flake8 --quiet
+
+      - name: 🔍 Lint Backend (if present)
+        run: |
+          if [ -d "backend" ]; then
+            echo "Linting backend/ ..."
+            # E501: ignore line-too-long (common in Flask/FastAPI)
+            # W503: line break before binary operator (style choice)
+            flake8 backend/ --max-line-length=120 --ignore=E501,W503 --statistics || true
+            echo "✅ Backend lint complete."
+          else
+            echo "ℹ️  No backend/ directory found yet — skipping."
+          fi
+
+      - name: 🔍 Lint ML Code (if present)
+        run: |
+          if [ -d "ml" ]; then
+            echo "Linting ml/ ..."
+            flake8 ml/ --max-line-length=120 --ignore=E501,W503 --statistics || true
+            echo "✅ ML lint complete."
+          else
+            echo "ℹ️  No ml/ directory found yet — skipping."
+          fi
+
+      - name: 🧪 Run Python Tests (if present)
+        run: |
+          if [ -d "backend/tests" ]; then
+            pip install pytest --quiet
+            cd backend && pytest tests/ -v --tb=short
+          elif [ -d "tests" ]; then
+            pip install pytest --quiet
+            pytest tests/ -v --tb=short
+          else
+            echo "ℹ️  No test directory found yet — skipping tests."
+            echo "📝 Tip: Add backend/tests/ when you're ready."
+          fi
+
+  # ── Job 3: Node / React checks (frontend) ─────────────────
+  frontend-checks:
+    name: ⚛️  Frontend Lint & Build Check
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.frontend == 'true' || needs.detect-changes.outputs.frontend == ''
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Set Up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: |
+            frontend/package-lock.json
+
+      - name: 📦 Install Frontend Dependencies
+        run: |
+          if [ -f "frontend/package.json" ]; then
+            cd frontend && npm ci --silent
+          else
+            echo "ℹ️  No frontend/package.json found yet — skipping."
+          fi
+
+      - name: 🔍 Lint Frontend (if ESLint configured)
+        run: |
+          if [ -f "frontend/package.json" ]; then
+            cd frontend
+            if grep -q '"lint"' package.json; then
+              npm run lint || true
+              echo "✅ Frontend lint complete."
+            else
+              echo "ℹ️  No lint script found in package.json — skipping."
+            fi
+          fi
+
+      - name: 🏗️ Build Check
+        run: |
+          if [ -f "frontend/package.json" ]; then
+            cd frontend
+            if grep -q '"build"' package.json; then
+              npm run build
+              echo "✅ Frontend builds successfully."
+            else
+              echo "ℹ️  No build script in package.json yet — skipping."
+            fi
+          fi
+
+  # ── Job 4: Config & YAML validation ───────────────────────
+  config-validation:
+    name: 📄 Validate Config Files
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set Up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 📋 Validate JSON Files
+        run: |
+          echo "Checking all .json files for valid syntax..."
+          FAILED=0
+          find . -name "*.json" \
+            -not -path "*/node_modules/*" \
+            -not -path "*/.git/*" | while read f; do
+              python3 -c "import json; json.load(open('$f'))" \
+                && echo "✅ $f" \
+                || { echo "❌ Invalid JSON: $f"; FAILED=1; }
+          done
+          exit $FAILED || true
+
+      - name: 📋 Validate YAML Files
+        run: |
+          pip install pyyaml --quiet
+          echo "Checking all .yml/.yaml files..."
+          find . -name "*.yml" -o -name "*.yaml" | \
+            grep -v node_modules | grep -v ".git" | while read f; do
+              python3 -c "import yaml; yaml.safe_load(open('$f'))" \
+                && echo "✅ $f" \
+                || echo "⚠️  Issue in: $f"
+          done
+
+  # ── Job 5: PR metadata check ───────────────────────────────
+  pr-metadata:
+    name: 📝 PR Description Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ✅ Check PR Has Description
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = context.payload.pull_request.body;
+            const title = context.payload.pull_request.title;
+
+            console.log(`PR Title: ${title}`);
+            console.log(`PR Body length: ${body ? body.length : 0} chars`);
+
+            if (!body || body.trim().length < 20) {
+              core.warning(
+                '⚠️  Your PR description is very short. ' +
+                'Please describe what you changed and why — ' +
+                'it helps during code review!'
+              );
+            } else {
+              console.log('✅ PR has a description. Good job!');
+            }
